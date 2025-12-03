@@ -17,6 +17,6 @@ Our NVIDIA graphics card driver is as follows:
 <br>
 We also require ray/2.6.1, tdigest/0.5.2.2, datasets/2.14.5, tokenizers/0.13.2, transformers/4.26.1.
 <br>
-We also provide package version for all pre-requisite packages here. See [file here](file.version.txt)
+We also provide package version for all pre-requisite packages here. See [file.version.txt](https://github.com/bernard2012/CancerST/blob/main/file.version.txt)
 
  
