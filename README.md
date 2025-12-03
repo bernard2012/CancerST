@@ -49,6 +49,36 @@ def get_gene_median_file():
     return "/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/jan21_qian_detected_gene_median_dict.pickle"
 ```
 
+```
+cp example/local.perturb/*.pickle .
+```
 Run perturbation tutorial. See `example/local.perturb/README.md`.
 
- 
+
+### 250um-Extended Model
+
+Copy the codes from `src/extended` directory to user's folder.
+
+```
+cp src/extended/*.py .
+```
+
+Setup `env.py` (see below). An example is provided in `example/local` folder. This defines the gene dictionary, gene median pickle files, etc. Again, these need to be copied to user's folder and referenced in `env.py`. These pickle files are located in `example/extended.perturb`.
+
+```
+import sys
+import os
+import re
+
+def get_token_dictionary_file():
+    return "/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/Extended.model/new_token_dictionary.pickle"
+def get_ensembl_dictionary_file():
+    return "/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/Extended.model/gene_id_dictionary.pickle"
+def get_gene_median_file():
+    return "/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/Extended.model/detected_gene_median_dict.pickle"
+```
+
+```
+cp example/extended.perturb/*.pickle .
+```
+Run perturbation tutorial. See `example/extended.perturb/README.md`. 
