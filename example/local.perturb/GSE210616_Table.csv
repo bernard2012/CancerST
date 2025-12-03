@@ -1,0 +1,45 @@
+Sample ID,Patient ID,Age,Race,Stage,Neoadjuvant tx,Cohort,Section type,Days to recurrence,Days to death,Days to max encounter,Relapse-free survival (Days),Overall Surival (Days)
+117B,1,40,African-American,IIA,None,Reference,Serial sections,,,1211,1211,1211
+117C,1,40,African-American,IIA,None,Reference,Serial sections,,,1211,1211,1211
+117D,2,39,African-American,IIA,"doxorubicin, cyclophosphamide, paclitaxel , dose dense with Neulasta support",Reference,Non-adjacent sections,,2773,,2773,2733
+117E,2,39,African-American,IIA,"doxorubicin, cyclophosphamide, paclitaxel , dose dense with Neulasta support",Reference,Non-adjacent sections,,2773,,2773,2733
+118B,3,41,African-American,IIB,cyclophosphamide/doxorubicin + taxol,Reference,Non-adjacent sections,630,669,,630,669
+118C,3,41,African-American,IIB,cyclophosphamide/doxorubicin + taxol,Reference,Non-adjacent sections,630,669,,630,669
+118D,4,35,African-American,IIB,None,Reference,Non-adjacent sections,,2163,,2163,2163
+118E,4,35,African-American,IIB,None,Reference,Non-adjacent sections,,2163,,2163,2163
+119B,5,44,Non-Hispanic White,IIA,None,Reference,Non-adjacent sections,,2741,,2741,2741
+119C,5,44,Non-Hispanic White,IIA,None,Reference,Non-adjacent sections,,2741,,2741,2741
+119D,6,39,Non-Hispanic White,IIA,None,Reference,Non-adjacent sections,,,4455,4455,4455
+119E,6,39,Non-Hispanic White,IIA,None,Reference,Non-adjacent sections,,,4455,4455,4455
+120B,7,39,Non-Hispanic White,IIA,None,Reference,Non-adjacent sections,,3783,,3783,3783
+120C,7,39,Non-Hispanic White,IIA,None,Reference,Non-adjacent sections,,3783,,3783,3783
+120D,8,46,Non-Hispanic White,IIB,None,Reference,Non-adjacent sections,,,1453,1453,1453
+120E,8,46,Non-Hispanic White,IIB,None,Reference,Non-adjacent sections,,,1453,1453,1453
+092A,9,36,African-American,IIB,None,Reference,Non-adjacent sections,,308,,308,308
+092B,9,36,African-American,IIB,None,Reference,Non-adjacent sections,,308,,308,308
+093A,11,29,African-American,IIB,None,Reference,Non-adjacent sections,,,2761,2761,2761
+093B,11,29,African-American,IIB,None,Reference,Non-adjacent sections,,,2761,2761,2761
+093C,12,40,African-American,IIIC,None,Reference,Non-adjacent sections,,190,,190,190
+093D,12,40,African-American,IIIC,None,Reference,Non-adjacent sections,,190,,190,190
+094A,13,29,Non-Hispanic White,IIB,None,Reference,Non-adjacent sections,282,4667,,282,4667
+094B,13,29,Non-Hispanic White,IIB,None,Reference,Non-adjacent sections,282,4667,,282,4667
+094C,14,52,Non-Hispanic White,IIA,Adriamycin-cyclophosphamide; carboplatin-Taxol,Reference,Non-adjacent sections,,718,,718,718
+094D,14,52,Non-Hispanic White,IIA,Adriamycin-cyclophosphamide; carboplatin-Taxol,Reference,Non-adjacent sections,,718,,718,718
+095A,15,42,Non-Hispanic White,IIIC,None,Reference,Non-adjacent sections,,815,,815,815
+095B,15,42,Non-Hispanic White,IIIC,None,Reference,Non-adjacent sections,,815,,815,815
+395A,17,39,African-American,IIIB,None,Validation,Non-adjacent sections,,605,,605,605
+395B,17,39,African-American,IIIB,None,Validation,Non-adjacent sections,,605,,605,605
+395C,18,49,African-American,IIIC,Adriamycin-cyclophosphamide w/neulasta; taxol (paclitaxel) +/- carboplatin +/- trastuzumab,Validation,Non-adjacent sections,1107,,1713,1107,1713
+395D,18,49,African-American,IIIC,Adriamycin-cyclophosphamide w/neulasta; taxol (paclitaxel) +/- carboplatin +/- trastuzumab,Validation,Non-adjacent sections,1107,,1713,1107,1713
+396A,19,44,African-American,IIIB,"carboplatin plus Taxol, DDAC, carboplatin & gemcitabine,
+eribulin & pembrolizumab",Validation,Single section,615,1406,,615,1406
+396C,20,36,African-American,IIIB,Adriamycin-cyclophosphamide; Taxol; docetaxel,Validation,Serial sections,,356,,356,356
+396D,20,36,African-American,IIIB,Adriamycin-cyclophosphamide; Taxol; docetaxel,Validation,Serial sections,,356,,356,356
+397A,21,35,African-American,IIA,DDAC; nab-paclitaxel,Validaiton,Non-adjacent sections,489,748,,489,748
+397B,21,35,African-American,IIA,DDAC; nab-paclitaxel,Validaiton,Non-adjacent sections,489,748,,489,748
+397C,22,43,African-American,IIB,Taxotere and Cytoxan,Validaiton,Non-adjacent sections,,4324,,4324,4324
+397D,22,43,African-American,IIB,Taxotere and Cytoxan,Validaiton,Non-adjacent sections,,4324,,4324,4324
+398A,23,53,African-American,IIB,Taxotere and Cytoxan,Validation,Non-adjacent sections,,1000,,1000,1000
+398B,23,53,African-American,IIB,Taxotere and Cytoxan,Validation,Non-adjacent sections,,1000,,1000,1000
+398C,24,54,African-American,IIB,None,Validation,Serial sections,,,973,973,973
+398D,24,54,African-American,IIB,None,Validation,Serial sections,,,973,973,973
