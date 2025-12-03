@@ -133,13 +133,21 @@ n_hyperopt_trials=num_trials)
 ```
 
 The important settings are:
+<br>
 **file1**: Positive gene-set (ganitumab sensitive genes)
+<br>
 **file2**: Negative gene-set (randomly selected genes)
+<br>
 **ray_config**: The fine-tuning settings, including the settings to iterate through: epochs, learning_rate, weight_decay, warmup_steps, and batch_size. Adjust batch_size according to your GPU memory.
+<br>
 **num_trials**: Number of Ray Tuning trials (recommend around 50-60).
+<br>
 **input_dataset**: Input ST dataset to be used for training purpose (in our case TNBC ST samples).
+<br>
 **model_directory**: Location of the pretrained model, which fine-tuning will begin from
+<br>
 **Classifier** settings: max_num_spots (the maximum number of spots from input_dataset to take for training purpose), classifier (the type of classifier, in this case, "gene"), num_crossval_splits (1 for 1-split, i.e. 2-fold cross validation, use one fold for training, the other fold for evaluation/model selection. Here split refers to training gene-set split.), freeze_layers (top 4 layers will be frozen. Leaving 2 trainable layers).
+<br>
 
 Define the gene to be perturbed. See `immune.gene.set`:
 
