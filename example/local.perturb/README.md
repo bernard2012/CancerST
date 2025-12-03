@@ -6,7 +6,8 @@ We provide a tutorial below for in silico gene perturbation using this model.
 
 We always recommend first fine tune the CancerSTFormer model before doing in silico gene perturbation. We recommend a Gene Classifier to fine-tune the model. Training genes can be treatment resistance or sensitive genes that come from bulk RNAseq studies or clinical trial studies. For example, we illustrate with ganitumab sensitive genes. Ganitumab is a IGF1R inhibitor. Thus finetuning will allow us better predict ST response to IGF1R deletion.
 
-### Step 1:
+### Step 1: Define Training Genes
+
 We have prepared a ganitumab sensitive gene-set 'ganitumab.upregulated.top300` to train the model to recognize it.
 
 ```
@@ -35,7 +36,8 @@ GINS3
 
 Next define random genes (randomly selected genes from genome of matched size as above positive gene-set). This is also provided `gene.shuffled.upregulated`.
 
-### Step 2:
+### Step 2: Modify Perturbation Code
+
 Modify the code `run_finetune_2f_ganitumab.py`. This program shown below, contains finetuning settings and instructions.
 ```
 import torch
@@ -143,7 +145,7 @@ The important settings are:
 **Classifier** settings: max_num_spots (the maximum number of spots from input_dataset to take for training purpose), classifier (the type of classifier, in this case, "gene"), num_crossval_splits (1 for 1-split, i.e. 2-fold cross validation, use one fold for training, the other fold for evaluation/model selection. Here split refers to training gene-set split.), freeze_layers (top 4 layers will be frozen. Leaving 2 trainable layers).
 <br>
 
-### Step 3:
+### Step 3: Run Perturbation Code
 
 Run the codes.
 
@@ -230,7 +232,6 @@ This table contains the following useful information:
 
 Each line is 1 of 60 tuning trials. Note down the trial ID column (first column, e.g., _objective_29648922. The trial ID is 29648922.) If you want to select a certain trial for downstream analysis, the training model for each trial is saved for later usage.
 
-<br>
 
 ### How to select trials?
 
@@ -251,6 +252,7 @@ Change the trial ID `run-c14060f2` with the trial ID from the above table. You s
 -rw-rw-r-- 1 qian qian    14180 Nov 18 07:14 rng_state.pth
 ```
 
+<br><br>
 
 ## In Silico Gene Perturbation using the Fine-tuned CancerSTFormer Model
 
