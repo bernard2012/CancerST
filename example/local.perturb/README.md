@@ -36,7 +36,7 @@ GINS3
 
 Next define random genes (randomly selected genes from genome of matched size as above positive gene-set). This is also provided `gene.shuffled.upregulated`.
 
-### Step 2: Modify Perturbation Code
+### Step 2: Modify Finetuning Code
 
 Modify the code `run_finetune_2f_ganitumab.py`. This program shown below, contains finetuning settings and instructions.
 ```
@@ -129,23 +129,16 @@ n_hyperopt_trials=num_trials)
 ```
 
 The important settings are:
-<br>
-**file1**: Positive gene-set (ganitumab sensitive genes)
-<br>
-**file2**: Negative gene-set (randomly selected genes)
-<br>
-**ray_config**: The fine-tuning settings, including the settings to iterate through: epochs, learning_rate, weight_decay, warmup_steps, and batch_size. Adjust batch_size according to your GPU memory.
-<br>
-**num_trials**: Number of Ray Tuning trials (recommend around 50-60).
-<br>
-**input_dataset**: Input ST dataset to be used for training purpose (in our case TNBC ST samples).
-<br>
-**model_directory**: Location of the pretrained model, which fine-tuning will begin from
-<br>
-**Classifier** settings: max_num_spots (the maximum number of spots from input_dataset to take for training purpose), classifier (the type of classifier, in this case, "gene"), num_crossval_splits (1 for 1-split, i.e. 2-fold cross validation, use one fold for training, the other fold for evaluation/model selection. Here split refers to training gene-set split.), freeze_layers (top 4 layers will be frozen. Leaving 2 trainable layers).
+- **file1**: Positive gene-set (ganitumab sensitive genes)
+- **file2**: Negative gene-set (randomly selected genes)
+- **ray_config**: The fine-tuning settings, including the settings to iterate through: epochs, learning_rate, weight_decay, warmup_steps, and batch_size. Adjust batch_size according to your GPU memory.
+- **num_trials**: Number of Ray Tuning trials (recommend around 50-60).
+- **input_dataset**: Input ST dataset to be used for training purpose (in our case TNBC ST samples).
+- **model_directory**: Location of the pretrained model, which fine-tuning will begin from
+- **Classifier** settings: max_num_spots (the maximum number of spots from input_dataset to take for training purpose), classifier (the type of classifier, in this case, "gene"), num_crossval_splits (1 for 1-split, i.e. 2-fold cross validation, use one fold for training, the other fold for evaluation/model selection. Here split refers to training gene-set split.), freeze_layers (top 4 layers will be frozen. Leaving 2 trainable layers).
 <br>
 
-### Step 3: Run Perturbation Code
+### Step 3: Run Finetuning Code
 
 Run the codes.
 
@@ -256,6 +249,7 @@ Change the trial ID `run-c14060f2` with the trial ID from the above table. You s
 
 ## In Silico Gene Perturbation using the Fine-tuned CancerSTFormer Model
 
+### Step 1: Define gene to perturb
 
 Define the gene to be perturbed. See `immune.gene.set`:
 
@@ -267,5 +261,75 @@ IDO
 ```
 One query per line. Users can add multiple queries. In this case, the program will perturb each gene individually, one at a time, and saves the results in the gene's own folder.
 
-Step 2: 
+### Step 2: Modify perturbation code
+
+See example file: `run_perturb_finetuned.py`.
+
+```
+import torch
+import numpy as np
+import pickle
+import os
+import sys
+from new_emb_extractor import EmbExtractor
+from new_in_silico_perturber import InSilicoPerturber
+from new_in_silico_perturber_stats import InSilicoPerturberStats
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
+torch.cuda.empty_cache()
+
+def run_perturb(model_path,dataset_path,out_dir,num_embs=None):
+    genes_perturb = list(np.loadtxt("immune.gene.set", dtype=str))
+    file_path = "jan21_qian_gene_name_id_dictionary.pickle"
+    with open(file_path, 'rb') as file:
+        ensemble_dictionary = pickle.load(file)
+    # Translate gene names to Ensembl IDs using the token_dictionary
+    good_genes = [ensemble_dictionary[gene] for gene in genes_perturb if gene in ensemble_dictionary]
+    file_path = "jan21_qian_new_token_dictionary.pickle"
+    # Open the file in read-binary mode and load it with pickle
+    with open(file_path, 'rb') as file:
+        token_dictionary = pickle.load(file)
+    # Translate gene names to Ensembl IDs using the token_dictionary
+    good_genes_final = [gene for gene in good_genes if gene in list(token_dictionary.keys())]
+    
+    filter_data_dict={"Disease":["TNBC"]}
+    for i, gene in enumerate(good_genes_final):
+        try:
+            print(f"Perturbing {gene}")
+            out_dir_final = out_dir + f"/{gene}"
+            os.makedirs(out_dir_final,exist_ok=True)
+            isp = InSilicoPerturber(perturb_type="delete", perturb_rank_shift=None,
+				genes_to_perturb = [gene], combos=0, anchor_gene=None,
+				#model_type="Pretrained",
+				model_type="GeneClassifier",
+				num_classes=2, emb_mode="spot_and_gene", spot_emb_style="mean_pool", filter_data=filter_data_dict,
+				max_num_spots=1000, emb_layer=-1, forward_batch_size=50, nproc=1)
+            isp.perturb_data(model_path, dataset_path, out_dir_final, os.path.basename(dataset_path).replace(".dataset","_emb"))
+            ispstats = InSilicoPerturberStats(mode="aggregate_gene_shifts", genes_perturbed = [gene], combos=0, anchor_gene=None)
+            ispstats.get_stats(out_dir_final, None, out_dir_final, os.path.basename(dataset_path).replace(".dataset","_emb"))
+        except Exception as e:
+            print(f"Error perturbing gene {gene}: {e}")
+            
+#datestamp = sys.argv[1]
+#run_id = sys.argv[2]
+run_id = "run-d64b2a10"
+out_dir = "TNBC_Gene_Shift_%s" % (run_id)
+os.makedirs(out_dir,exist_ok=True)
+'''
+res_dir = None #250919_geneformer_geneClassifier_responder_test
+for root, dirs, files in os.walk("finetuned"):
+	for d in dirs:
+		if d.endswith("responder_test"):
+			res_dir = d
+			break
+'''
+cpt_dir = None
+for root, dirs, files in os.walk("finetuned/ksplit1/%s" % (run_id)):
+	for d in dirs:
+		if d.startswith("checkpoint-"):
+			cpt_dir = d
+			break
+model_path = "finetuned/ksplit1/%s/%s" % (run_id, cpt_dir)
+dataset_path = "STGeneformer_TNBC_Normal_Perturbset_filtered.dataset"
+run_perturb(model_path,dataset_path,out_dir)
+```
 
