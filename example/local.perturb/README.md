@@ -230,6 +230,29 @@ This table contains the following useful information:
 
 Each line is 1 of 60 tuning trials. Note down the trial ID column (first column, e.g., _objective_29648922. The trial ID is 29648922.) If you want to select a certain trial for downstream analysis, the training model for each trial is saved for later usage.
 
+<br>
+
+### How to select trials?
+
+**We generally select the top 5 trials (with lowest eval_loss) and the top 5 trials (with highest eval_macro_f1) for downstream analysis and model evaluation. This helps to get a sense of spread of trained model performances. We do not rely on the so-called best single trial, as it may sometimes mis-predict. Thus our model evaluation is the average of performances of the top 5 trials.**
+
+### Location of the 60 trials' trained model
+
+They are located in, for example: `251118071123/251118_cancerstformer_geneClassifier_responder_test/ksplit1/run-c14060f2/checkpoint-1000/`
+
+Change the trial ID `run-c14060f2` with the trial ID from the above table. You should see the following files in the `checkpoint-1000` folder:
+```
+-rw-rw-r-- 1 qian qian      683 Nov 18 07:14 config.json
+-rw-rw-r-- 1 qian qian     5240 Nov 18 07:14 training_args.bin
+-rw-rw-r-- 1 qian qian 35208744 Nov 18 07:14 model.safetensors
+-rw-rw-r-- 1 qian qian     1064 Nov 18 07:14 scheduler.pt
+-rw-rw-r-- 1 qian qian 53559546 Nov 18 07:14 optimizer.pt
+-rw-rw-r-- 1 qian qian     2672 Nov 18 07:14 trainer_state.json
+-rw-rw-r-- 1 qian qian    14180 Nov 18 07:14 rng_state.pth
+```
+
+
+## In Silico Gene Perturbation using the Fine-tuned CancerSTFormer Model
 
 
 Define the gene to be perturbed. See `immune.gene.set`:
