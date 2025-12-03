@@ -2,8 +2,11 @@
 
 We provide a tutorial below for in silico gene perturbation using this model. 
 
-Step 1: Fine-tuning the model to enable better prediction
+## Fine-tuning the model to enable better prediction
 
+We always recommend first fine tune the CancerSTFormer model before doing in silico gene perturbation. We recommend a Gene Classifier to fine-tune the model. Training genes can be treatment resistance or sensitive genes that come from bulk RNAseq studies or clinical trial studies. For example, we illustrate with ganitumab sensitive genes. Ganitumab is a IGF1R inhibitor. Thus finetuning will allow us better predict ST response to IGF1R deletion.
+
+### Step 1:
 We have prepared a ganitumab sensitive gene-set 'ganitumab.upregulated.top300` to train the model to recognize it.
 
 ```
@@ -32,6 +35,7 @@ GINS3
 
 Next define random genes (randomly selected genes from genome of matched size as above positive gene-set). This is also provided `gene.shuffled.upregulated`.
 
+### Step 2:
 Modify the code `run_finetune_2f_ganitumab.py`. This program shown below, contains finetuning settings and instructions.
 ```
 import torch
@@ -52,7 +56,6 @@ torch.cuda.empty_cache()
 direction = sys.argv[1]
 
 file1, file2 = None, None
-
 if direction=="up":
 	file1 = "ganitumab.upregulated.top300"
 	file2 = "gene.shuffled.upregulated"
@@ -62,9 +65,7 @@ elif direction=="down":
 	
 genes_group1 = list(np.loadtxt(file1,dtype=str))
 genes_group2 = list(np.loadtxt(file2, dtype=str))
-
 training_args = {"num_train_epochs": 30.0, "weight_decay": 0.35, "learning_rate": 1e-5, "warmup_steps":500, "lr_scheduler_type": "polynomial"}
-
 ray_config = {"num_train_epochs": [1.0,],
 "learning_rate": (1e-3, 1e-2),
 "weight_decay": (0.01, 0.05),
@@ -77,33 +78,27 @@ ray_config = {"num_train_epochs": [1.0,],
 ensemble_dictionary = {}
 with open("jan21_qian_gene_name_id_dictionary.pickle", 'rb') as file:
 	ensemble_dictionary = pickle.load(file)
-
 good_group1 = [ensemble_dictionary[gene] for gene in genes_group1 if gene in ensemble_dictionary]
 good_group2 = [ensemble_dictionary[gene] for gene in genes_group2 if gene in ensemble_dictionary]
-
 print(len(good_group1))
 print(len(good_group2))
 
 label1, label2 = None, None
-
 if direction=="up":
 	label1 = "Responder"
 	label2 = "Random.genes"
 elif direction=="down":
 	label1 = "Nonresponder"
 	label2 = "Random.genes"
-
 gene_dict = {label1: good_group1, label2: good_group2}
 id_class_dict = {1: label1, 0: label2}
 filter_data_dict={"Disease":["TNBC"]}
-
 current_date = datetime.datetime.now()
 datestamp = f"{str(current_date.year)[-2:]}{current_date.month:02d}{current_date.day:02d}{current_date.hour:02d}{current_date.minute:02d}{current_date.second:02d}"
 datestamp_min = f"{str(current_date.year)[-2:]}{current_date.month:02d}{current_date.day:02d}"
 
 output_prefix = "responder_test"
 output_dir = f"/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/{datestamp}"
-
 os.makedirs(output_dir,exist_ok=True)
 num_trials = 4
 input_dataset = "/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/STGeneformer_TNBC_Normal_Perturbset_filtered.dataset"
@@ -119,8 +114,7 @@ fw.write(input_dataset + "\n")
 fw.write(str(num_trials) + "\n")
 fw.close()
 
-cc = Classifier(classifier="gene", gene_class_dict = gene_dict, 
-max_num_spots = 10_000, freeze_layers = 4, num_crossval_splits = 1,
+cc = Classifier(classifier="gene", gene_class_dict = gene_dict, max_num_spots = 10_000, freeze_layers = 4, num_crossval_splits = 1,
 forward_batch_size=200, nproc=16, training_args = training_args, cust_id_class_dict = id_class_dict, ray_config=ray_config, filter_data=filter_data_dict)
 
 cc.prepare_data(input_data_file=input_dataset, o_directory=output_dir, o_prefix=output_prefix)
@@ -148,6 +142,11 @@ The important settings are:
 <br>
 **Classifier** settings: max_num_spots (the maximum number of spots from input_dataset to take for training purpose), classifier (the type of classifier, in this case, "gene"), num_crossval_splits (1 for 1-split, i.e. 2-fold cross validation, use one fold for training, the other fold for evaluation/model selection. Here split refers to training gene-set split.), freeze_layers (top 4 layers will be frozen. Leaving 2 trainable layers).
 <br>
+
+### Step 3:
+
+Run the codes.
+
 
 Define the gene to be perturbed. See `immune.gene.set`:
 
