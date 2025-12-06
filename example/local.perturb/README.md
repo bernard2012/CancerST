@@ -554,129 +554,206 @@ Here we can run `read_pert()` with `detect_min` set to a cutoff like 100 - this 
 
 There is a python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py`. Look at the code:
 ```python
-import sys
 import os
-import re
-from scipy.stats import hypergeom
-import numpy as np
+import sys
 
-def read_lr_targets(n):
-	f = open(n)
-	h = f.readline().rstrip("\n").split("\t")[1:]
-	by_ligand = {}
-	for l in f:
-		l = l.rstrip("\n")
-		ll = l.split("\t")
-		lx = zip(h, ll[1:])
-		for i1, i2 in lx:
-			by_ligand.setdefault(i1, [])
-			by_ligand[i1].append(i2)
-	f.close()
+import numpy as np
+from scipy.stats import hypergeom
+
+
+def read_lr_targets(filename):
+	"""Read ligand–receptor targets from file into a dict keyed by ligand."""
+	with open(filename) as f:
+		header = f.readline().rstrip("\n").split("\t")[1:]
+		by_ligand = {}
+		for line in f:
+			line = line.rstrip("\n")
+			parts = line.split("\t")
+			pairs = zip(header, parts[1:])
+			for ligand, value in pairs:
+				by_ligand.setdefault(ligand, [])
+				by_ligand[ligand].append(value)
 	return by_ligand
 
-def read_target_list(n):
-	f = open(n)
-	tt = []
-	for l in f:
-		l = l.rstrip("\n")
-		tt.append(l.split("\t")[1])
-	f.close()
-	return tt
+
+def read_target_list(filename):
+	"""Read target list from file (second column per line)."""
+	targets = []
+	with open(filename) as f:
+		for line in f:
+			line = line.rstrip("\n")
+			targets.append(line.split("\t")[1])
+	return targets
+
 
 def pr_from_ranklist(ranklist, gold):
+	"""Compute precision–recall arrays from a ranked list and gold set."""
 	tp = 0
 	precisions, recalls = [], []
-	G = len(gold)					   # number of true positives in gold standard
-	for i, gene in enumerate(ranklist, 1):   # 1‑based rank
+	g_size = len(gold)  # number of true positives in gold standard
+
+	for i, gene in enumerate(ranklist, 1):  # 1-based rank
 		if gene in gold:
 			tp += 1
 		precisions.append(tp / i)
-		recalls.append(tp / G)
+		recalls.append(tp / g_size)
+
 	return np.asarray(recalls), np.asarray(precisions)
 
-def read_pert(n, checkpoint, detect_min=-1):
-	f = open(checkpoint + "/" + n + "/STGeneformer_TNBC_Normal_Perturbset_filtered_emb.csv")
-	h = f.readline().rstrip("\n").split(",")
+
+def read_pert(gene_id, checkpoint, detect_min=-1):
+	"""Read perturbed genes from CSV for a given gene/checkpoint."""
+	filepath = os.path.join(
+		checkpoint,
+		gene_id,
+		"STGeneformer_TNBC_Normal_Perturbset_filtered_emb.csv",
+	)
+
 	gene_list = []
 	filtered = []
-	for l in f:
-		l = l.rstrip("\n")
-		ll = l.split(",")
-		ndetect = int(ll[-1])
-		if detect_min!=-1:
-			if ndetect<detect_min:
-				filtered.append(ll[5])
+
+	with open(filepath) as f:
+		header = f.readline().rstrip("\n").split(",")
+		for line in f:
+			line = line.rstrip("\n")
+			parts = line.split(",")
+			ndetect = int(parts[-1])
+			if detect_min != -1 and ndetect < detect_min:
+				filtered.append(parts[5])
 				continue
-		gene = ll[5]
-		gene_list.append(gene)
-	f.close()
+			gene = parts[5]
+			gene_list.append(gene)
+
 	gene_list = gene_list + filtered
 	return gene_list
 
-def read_conversion(n):
-	f = open(n)
-	m = []
-	for l in f:
-		l = l.rstrip("\n")
-		ll = l.split("\t")
-		m.append((ll[0], ll[1]))
-	f.close()
-	return m
 
-if __name__=="__main__":
-	#arg1: checkpoint
-	#arg2: detect_min
-	#arg3: basal/shuf1
-	goldstd = sys.argv[3] #basal or shuf1
-	by_ligand = {}
-	if goldstd=="basal":
-		by_ligand = read_lr_targets("/media/scandisk/Perturbation/pdcd1.ispy2.basal.targets.txt")
-	elif goldstd=="shuf1":
-		by_ligand = read_lr_targets("../../tnbc.responder.spatialmodel/pembro/shuf1/test/TNBC.PDCD1.targets.200.txt") #good
+def read_conversion(filename):
+	"""Read symbol–Ensembl conversion pairs."""
+	mapping = []
+	with open(filename) as f:
+		for line in f:
+			line = line.rstrip("\n")
+			parts = line.split("\t")
+			mapping.append((parts[0], parts[1]))
+	return mapping
+
+
+if __name__ == "__main__":
+	# arg1: checkpoint
+	# arg2: detect_min
+	# arg3: basal/shuf1
+	goldstd = sys.argv[3]  # basal or shuf1
+
+	if goldstd == "basal":
+		by_ligand = read_lr_targets(
+			"/media/scandisk/Perturbation/"
+			"pdcd1.ispy2.basal.targets.txt",
+		)
+	elif goldstd == "shuf1":
+		by_ligand = read_lr_targets(
+			"../../tnbc.responder.spatialmodel/pembro/"
+			"shuf1/test/TNBC.PDCD1.targets.200.txt",
+		)
 	else:
 		print("Error, not exist")
 		sys.exit(0)
+
 	target_list = read_target_list("../profiles.targets.txt")
-	#pert_genes = read_pert("ENSG00000120217")
 	checkpoint = sys.argv[1]
-	#print("Target list", len(target_list))
-	#print("Pert list", len(pert_genes))
-	#print("Overlap list", len(set(target_list) & set(pert_genes)))
-	fw1 = open("%s/TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt" % checkpoint, "w")
-	fw2 = open("%s/TNBC_immunotherapy_PDCD1_pr.txt" % checkpoint, "w")
-	fw3 = open("%s/TNBC_immunotherapy_PDCD1_recall.txt" % checkpoint, "w")
+
+	out_fold_pr = os.path.join(
+		checkpoint,
+		"TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt",
+	)
+	out_pr = os.path.join(
+		checkpoint,
+		"TNBC_immunotherapy_PDCD1_pr.txt",
+	)
+	out_recall = os.path.join(
+		checkpoint,
+		"TNBC_immunotherapy_PDCD1_recall.txt",
+	)
 
 	sym_ensembl = read_conversion("conversion")
-	for sym, ens in sym_ensembl:
-		#for sym2 in ["CD274", "PDCD1", "CTLA4"]:
-		for direction in ["up", "down"]:
-			pert_genes = read_pert(ens, checkpoint, detect_min=int(sys.argv[2]))
-			print("Pert gene", sym)
-			eval_genes = list(set(target_list) & set(pert_genes))
-			l_target = [e for e in by_ligand["PDCD1_%s" % (direction)] if e in eval_genes]
-			#predicted ligand targets
-			pred = [e for e in pert_genes[:500] if e in eval_genes]
-			ov = set(l_target) & set(pred)
-			N = len(eval_genes)
-			K = len(l_target)
-			n = len(pred)
-			k = len(ov)
-			p = hypergeom.sf(k-1, N, K, n)
-			logp = -1.0 * np.log10(p)
-			exp_k = hypergeom.isf(0.50, N, K, n) + 1
-			fold_over_random = len(ov) / exp_k
-			recall, precision = pr_from_ranklist(pert_genes, set(l_target))
-			grid = np.arange(0.00, 1.01, 0.01)			 # 0.00, 0.01, …, 1.00
-			interp_prec = [precision[recall >= r].max() if np.any(recall >= r) else 0.0 for r in grid]
-			baseline_pr = len(l_target) / len(pert_genes)
-			fold_pr = [ip/baseline_pr for ip in interp_prec]
-			fw1.write(" ".join(["%f" % fr for fr in fold_pr]) + "\n")
-			fw2.write(" ".join(["%f" % pr for pr in interp_prec]) + "\n")
-			fw3.write(" ".join(["%f" % re for re in grid]) + "\n")
-		#print(len(ov), len(l_target), len(pred), len(eval_genes), logp, exp_k, fold_over_random)
-	fw1.close()
-	fw2.close()
-	fw3.close()
+
+	with open(out_fold_pr, "w") as fw1, \
+			open(out_pr, "w") as fw2, \
+			open(out_recall, "w") as fw3:
+
+		for sym, ens in sym_ensembl:
+			for direction in ["up", "down"]:
+				pert_genes = read_pert(
+					ens,
+					checkpoint,
+					detect_min=int(sys.argv[2]),
+				)
+				print("Pert gene", sym)
+
+				eval_genes = list(
+					set(target_list) & set(pert_genes),
+				)
+				l_target = [
+					g
+					for g in by_ligand[f"PDCD1_{direction}"]
+					if g in eval_genes
+				]
+
+				# predicted ligand targets
+				pred = [
+					g for g in pert_genes[:500] if g in eval_genes
+				]
+				ov = set(l_target) & set(pred)
+
+				n_total = len(eval_genes)
+				k_targets = len(l_target)
+				n_pred = len(pred)
+				k_overlap = len(ov)
+
+				p_val = hypergeom.sf(
+					k_overlap - 1,
+					n_total,
+					k_targets,
+					n_pred,
+				)
+				logp = -1.0 * np.log10(p_val)
+
+				exp_k = hypergeom.isf(
+					0.50,
+					n_total,
+					k_targets,
+					n_pred,
+				) + 1
+
+				fold_over_random = len(ov) / exp_k
+
+				recall, precision = pr_from_ranklist(
+					pert_genes,
+					set(l_target),
+				)
+
+				# 0.00, 0.01, …, 1.00
+				grid = np.arange(0.00, 1.01, 0.01)
+
+				interp_prec = [
+					precision[recall >= r].max()
+					if np.any(recall >= r)
+					else 0.0
+					for r in grid
+				]
+
+				baseline_pr = len(l_target) / len(pert_genes)
+				fold_pr = [ip / baseline_pr for ip in interp_prec]
+
+				fw1.write(
+					" ".join(f"{fr:f}" for fr in fold_pr) + "\n",
+				)
+				fw2.write(
+					" ".join(f"{pr:f}" for pr in interp_prec) + "\n",
+				)
+				fw3.write(
+					" ".join(f"{re:f}" for re in grid) + "\n",
+				)
 ```
 
 To use the evaluation script, you must define the gold-standard genes, i.e., PD-1 targets. See line:
