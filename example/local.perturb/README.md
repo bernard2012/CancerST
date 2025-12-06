@@ -363,8 +363,6 @@ We should next run the perturbation codes:
 python3 run_perturb_finetuned.py
 ```
 
-<br>
-
 ### Step 3: View the perturbation results
 
 ([Back to main &uarr;](#contents))
@@ -408,7 +406,7 @@ We can go into a gene of interest, say ENSG00000120217. View the content using a
 
 - Column 3 and column 4 are the gene perturbed (CD274 and its ENSEMBL gene ID). 
 - The column `Affected_gene_name` shows the most affected gene sorted from lowest to highest `Cosine_sim_mean`. 
-- The last column `N_Detections` is equally important - it shows number of spots in which the affected gene is expressed. The number here is presented out of a total of 1000 spots. For genes like CACNB2 and FXYD7, with N_detections of 8 and 2 respectively, they should be probably ignored due to low detections. **We therefore recommend filtering genes based on `N_Detections`, or reranking the genes based on a combination of `Cosine_sim_mean` and `N_Detections`.**
+- The last column `N_Detections` is equally important - it shows number of spots in which the affected gene is expressed. The number here is presented out of a total of 1000 spots. For genes like CACNB2 and FXYD7, with `N_detections` of 8 and 2 respectively, they should be probably ignored due to low detections. **We therefore recommend filtering genes based on `N_Detections`, or reranking the genes based on a combination of `Cosine_sim_mean` and `N_Detections`.**
 
 <br>
 
@@ -435,7 +433,7 @@ def read_pert(n, checkpoint, detect_min=-1):
     return gene_list
 ```
 
-Here we can run read_pert() with detect_min set to a cutoff like 100 - this means N_detections must be greater than or equal to 100 for the gene to be counted, else it is pushed to the bottom of the ranking.
+Here we can run `read_pert()` with `detect_min` set to a cutoff like 100 - this means `N_detections` must be greater than or equal to 100 for the gene to be counted, else it is pushed to the bottom of the ranking.
 
 <br>
 
