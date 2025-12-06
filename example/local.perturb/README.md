@@ -9,6 +9,10 @@ We provide a tutorial below for in silico gene perturbation using this model.
   - [Step 2: Modify Finetuning Code](#step-2-modify-finetuning-code)
   - [Step 3: Run Finetuning Code](#step-3-run-finetuning-code)
 - [In Silico Gene Perturbation using the Fine-tuned CancerSTFormer Model](#in-silico-gene-perturbation-using-the-fine-tuned-cancerstformer-model)
+  - [Step 1: Define gene to perturb](#step-1-define-gene-to-perturb)
+  - [Step 2: Modify perturbation code](#step-2-modify-perturbation-code)
+  - [Step 3: View the perturbation results](#step-3-view-the-perturbation-results)
+  - [Step 4: Evaluate the Perturbation Results](#step-4-evaluate-the-perturbation-results)
 
 <br><br>
 
