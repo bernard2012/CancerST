@@ -408,6 +408,261 @@ Here we can run read_pert() with detect_min set to a cutoff like 100 - this mean
 
 ### Step 4: Evaluate the Perturbation Results
 
+There is a python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py`. Look at the code:
+```import sys
+import os
+import re
+from scipy.stats import hypergeom
+import numpy as np
 
+def read_lr_targets(n):
+	f = open(n)
+	h = f.readline().rstrip("\n").split("\t")[1:]
+	by_ligand = {}
+	for l in f:
+		l = l.rstrip("\n")
+		ll = l.split("\t")
+		lx = zip(h, ll[1:])
+		for i1, i2 in lx:
+			by_ligand.setdefault(i1, [])
+			by_ligand[i1].append(i2)
+	f.close()
+	return by_ligand
 
+def read_target_list(n):
+	f = open(n)
+	tt = []
+	for l in f:
+		l = l.rstrip("\n")
+		tt.append(l.split("\t")[1])
+	f.close()
+	return tt
+
+def pr_from_ranklist(ranklist, gold):
+	tp = 0
+	precisions, recalls = [], []
+	G = len(gold)                       # number of true positives in gold standard
+	for i, gene in enumerate(ranklist, 1):   # 1‑based rank
+		if gene in gold:
+			tp += 1
+		precisions.append(tp / i)
+		recalls.append(tp / G)
+	return np.asarray(recalls), np.asarray(precisions)
+
+def read_pert(n, checkpoint, detect_min=-1):
+	f = open(checkpoint + "/" + n + "/STGeneformer_TNBC_Normal_Perturbset_filtered_emb.csv")
+	h = f.readline().rstrip("\n").split(",")
+	gene_list = []
+	filtered = []
+	for l in f:
+		l = l.rstrip("\n")
+		ll = l.split(",")
+		ndetect = int(ll[-1])
+		if detect_min!=-1:
+			if ndetect<detect_min:
+				filtered.append(ll[5])
+				continue
+		gene = ll[5]
+		gene_list.append(gene)
+	f.close()
+	gene_list = gene_list + filtered
+	return gene_list
+
+def read_conversion(n):
+	f = open(n)
+	m = []
+	for l in f:
+		l = l.rstrip("\n")
+		ll = l.split("\t")
+		m.append((ll[0], ll[1]))
+	f.close()
+	return m
+
+if __name__=="__main__":
+	#arg1: checkpoint
+	#arg2: detect_min
+	#arg3: basal/shuf1
+	goldstd = sys.argv[3] #basal or shuf1
+	by_ligand = {}
+	if goldstd=="basal":
+		by_ligand = read_lr_targets("/media/scandisk/Perturbation/pdcd1.ispy2.basal.targets.txt")
+	elif goldstd=="shuf1":
+		by_ligand = read_lr_targets("../../tnbc.responder.spatialmodel/pembro/shuf1/test/TNBC.PDCD1.targets.200.txt") #good
+	else:
+		print("Error, not exist")
+		sys.exit(0)
+	target_list = read_target_list("../profiles.targets.txt")
+	#pert_genes = read_pert("ENSG00000120217")
+	checkpoint = sys.argv[1]
+	#print("Target list", len(target_list))
+	#print("Pert list", len(pert_genes))
+	#print("Overlap list", len(set(target_list) & set(pert_genes)))
+	fw1 = open("%s/TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt" % checkpoint, "w")
+	fw2 = open("%s/TNBC_immunotherapy_PDCD1_pr.txt" % checkpoint, "w")
+	fw3 = open("%s/TNBC_immunotherapy_PDCD1_recall.txt" % checkpoint, "w")
+
+	sym_ensembl = read_conversion("conversion")
+	for sym, ens in sym_ensembl:
+		#for sym2 in ["CD274", "PDCD1", "CTLA4"]:
+		for direction in ["up", "down"]:
+			pert_genes = read_pert(ens, checkpoint, detect_min=int(sys.argv[2]))
+			print("Pert gene", sym)
+			eval_genes = list(set(target_list) & set(pert_genes))
+			l_target = [e for e in by_ligand["PDCD1_%s" % (direction)] if e in eval_genes]
+			#predicted ligand targets
+			pred = [e for e in pert_genes[:500] if e in eval_genes]
+			ov = set(l_target) & set(pred)
+			N = len(eval_genes)
+			K = len(l_target)
+			n = len(pred)
+			k = len(ov)
+			p = hypergeom.sf(k-1, N, K, n)
+			logp = -1.0 * np.log10(p)
+			exp_k = hypergeom.isf(0.50, N, K, n) + 1
+			fold_over_random = len(ov) / exp_k
+			recall, precision = pr_from_ranklist(pert_genes, set(l_target))
+			grid = np.arange(0.00, 1.01, 0.01)             # 0.00, 0.01, …, 1.00
+			interp_prec = [precision[recall >= r].max() if np.any(recall >= r) else 0.0 for r in grid]
+			baseline_pr = len(l_target) / len(pert_genes)
+			fold_pr = [ip/baseline_pr for ip in interp_prec]
+			fw1.write(" ".join(["%f" % fr for fr in fold_pr]) + "\n")
+			fw2.write(" ".join(["%f" % pr for pr in interp_prec]) + "\n")
+			fw3.write(" ".join(["%f" % re for re in grid]) + "\n")
+		#print(len(ov), len(l_target), len(pred), len(eval_genes), logp, exp_k, fold_over_random)
+	fw1.close()
+	fw2.close()
+	fw3.close()
+```
+
+To use the evaluation script, you must define the gold-standard genes, i.e., PD-1 targets. See line:
+`pdcd1.ispy2.basal.targets.txt`:
+
+#### Defining gold standard genes
+
+Here is an example of gold-standard genes, which is top 200 PDCD1-upregulated and PDCD1-downregulated genes:
+
+```
+column	PDCD1_up	PDCD1_down
+1	PSME4	ZFP62
+2	ATP6V1E2	TMEM187
+3	DDX58	SLC25A5
+4	BCS1L	ZNF595
+5	SLC45A4	DDX41
+6	APP	ZNF581
+7	RIOK1	TBCEL
+8	TOR3A	ARRDC3
+9	TRIM25	ERO1LB
+10	ND1	FAM188A
+11	QSOX2	JUN
+12	DPH2	DHRS12
+13	KIF11	PKP3
+14	DHX9	HMGB3P1
+15	SERP1	SHD
+16	NOLC1	XIAP
+17	PARP12	TBC1D10A
+18	LAG3	IFITM4P
+19	GRIN3A	MTM1
+20	KIF4A	OSGIN1
+21	SOX10	B3GALT4
+22	GYG1	SPACA6P
+23	DYRK2	LOC100129781
+24	CACUL1	ANKRD37
+25	FAHD2A	CDS1
+26	TOMM70A	HMGB3
+27	TTLL4	SLC2A3
+28	ADAR	LINC00894
+29	OXCT1	TTC12
+30	FAM171A1	NSDHL
+31	DDAH1	SHC3
+32	TRIM59	ZNF300P1
+33	PLD6	SLC10A3
+34	GFOD1	MOB2
+35	SLAMF8	CRYBA2
+36	CMKLR1	CNEP1R1
+37	IL12RB2	MYOZ1
+38	IL21R	IRAK4
+39	MCM4	EGFLAM
+40	LOC730101	GMPR2
+41	AKR7A2P1	LOC101927263
+42	PRPSAP2	NNMT
+43	CYP27A1	DSCR3
+44	CKAP5	C2orf54
+45	LDOC1L	TGFBR1
+46	CERS2	ZNF784
+47	PLEK2	ACKR3
+48	LAPTM5	SYF2
+49	FUCA1	ZFYVE19
+50	UCHL1	MICAL2
+51	FASTKD5	B4GALT7
+52	PHF19	ZFP2
+53	EBI3	VMA21
+54	FMNL2	CNTNAP2
+55	SH2D2A	MAPK9
+56	CRLF3	SPTSSA
+57	ARNT2	S100P
+58	GLT1D1	FAM19A5
+59	TTF1	LAMP2
+60	TACC3	CRYBG3
+61	IFIT3	SMARCD3
+62	CDC20	INHBC
+63	STAT5A	LRRC70
+64	PKP4	PPHLN1
+65	LIAS	ZSCAN20
+66	ABTB1	IQGAP1
+67	SIAH2	RIC3
+68	C15orf41	MPZL2
+69	FBXL13	ZNF577
+70	MX1	GPR12
+71	RPS6KC1	PPP2CB
+72	VAV1	RIMKLA
+73	YRDC	RNF113A
+74	TTC19	ATP5S
+75	TRIM14	ZNF654
+76	ARHGAP22	SLC16A3
+77	PSMD11	MPP7
+78	MED10	ZNF614
+79	CEBPA	BMPR1A
+80	TNFRSF9	CTAGE11P
+81	RNF135	MGME1
+82	FOXM1	SLC35B2
+83	TUBB	NDUFAF1
+84	HLA-DRB5	NUDT9
+85	CTPS1	SLC2A4RG
+86	FARSB	SPINK1
+87	POLR1E	PLK2
+88	RCL1	DCUN1D3
+89	ATR	ACSF2
+90	ITGB2	LINC00520
+91	TCF19	FAM3A
+92	G26403	C16orf72
+93	CXXC4	VSIG2
+94	SLA	RAP2C
+95	NELL2	MIR31HG
+96	RHCE	HOXB6
+97	ALMS1P	FOLR3
+98	TBC1D7	PHF1
+99	ZNF618	CA11
+...
+```
+
+The evaluation will use the gold-standard genes to calculate a **Precision over Recall** curve and **Precision-over-random Over Recall** curve. For example run:
+
+```
+python3 evaluate.pr.tnbc.immunotherapy.basal.custom.py
+```
+
+After running you will see 3 files generated:
+```
+-rw-rw-r-- 1 qian qian 5454 Sep 21 11:44 TNBC_immunotherapy_PDCD1_recall.txt
+-rw-rw-r-- 1 qian qian 5454 Sep 21 11:44 TNBC_immunotherapy_PDCD1_pr.txt
+-rw-rw-r-- 1 qian qian 5455 Sep 21 11:44 TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt
+```
+
+The content of TNBC_immunotherapy_PDCD1_pr.txt is the **Precision** values, over the recall values (TNBC_immunotherapy_PDCD1_recall.txt).
+The content of TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt shows the **Precision-Over-Radom values**, over the same recalls as above. For example, the values below are the fold-precision-over-random values.
+```
+3.470265 3.470265 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 ...
+```
+
+You can easily use ggplot2 or matplotlib (Python) to plot the PR curve.
 
