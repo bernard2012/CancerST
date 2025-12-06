@@ -271,7 +271,11 @@ Change the trial ID `run-c14060f2` with the trial ID from the above table. You s
 
 ## In Silico Gene Perturbation using the Fine-tuned CancerSTFormer Model
 
+([Back to main &uarr;](#contents))
+
 ### Step 1: Define gene to perturb
+
+([Back to main &uarr;](#contents))
 
 Define the gene to be perturbed. See `immune.gene.set`:
 
@@ -284,6 +288,8 @@ IDO
 One query per line. Users can add multiple queries. In this case, the program will perturb each gene individually, one at a time, and saves the results in the gene's own folder.
 
 ### Step 2: Modify perturbation code
+
+([Back to main &uarr;](#contents))
 
 See example file: `run_perturb_finetuned.py`.
 
@@ -360,6 +366,8 @@ python3 run_perturb_finetuned.py
 
 ### Step 3: View the perturbation results
 
+([Back to main &uarr;](#contents))
+
 The results are stored in the `out_dir` directory that is defined in the previous step. So let us see the directory.
 
 ```
@@ -429,6 +437,8 @@ Here we can run read_pert() with detect_min set to a cutoff like 100 - this mean
 <br>
 
 ### Step 4: Evaluate the Perturbation Results
+
+([Back to main &uarr;](#contents))
 
 There is a python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py`. Look at the code:
 ```import sys
