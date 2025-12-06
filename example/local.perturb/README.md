@@ -293,7 +293,8 @@ One query per line. Users can add multiple queries. In this case, the program wi
 
 See example file: `run_perturb_finetuned.py`.
 
-```import torch
+```python
+import torch
 import numpy as np
 import pickle
 import os
@@ -441,7 +442,8 @@ Here we can run read_pert() with detect_min set to a cutoff like 100 - this mean
 ([Back to main &uarr;](#contents))
 
 There is a python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py`. Look at the code:
-```import sys
+```python
+import sys
 import os
 import re
 from scipy.stats import hypergeom
