@@ -12,11 +12,11 @@ We provide a tutorial below for in silico gene perturbation using this model.
 
 <br><br>
 
-## Fine-tuning the model to enable better prediction ([back to main](#contents))
+## Fine-tuning the model to enable better prediction ([&uarr;](#contents))
 
 We always recommend first fine tune the CancerSTFormer model before doing in silico gene perturbation. We recommend a Gene Classifier to fine-tune the model. Training genes can be treatment resistance or sensitive genes that come from bulk RNAseq studies or clinical trial studies. For example, we illustrate with ganitumab sensitive genes. Ganitumab is a IGF1R inhibitor. Thus finetuning will allow us better predict ST response to IGF1R deletion.
 
-### Step 1: Define Training Genes ([back to main](#contents))
+### Step 1: Define Training Genes ([&uarr;](#contents))
 
 We have prepared a ganitumab sensitive gene-set 'ganitumab.upregulated.top300` to train the model to recognize it.
 
