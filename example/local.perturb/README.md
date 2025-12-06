@@ -539,7 +539,7 @@ To use the evaluation script, you must define the gold-standard genes, i.e., PD-
 
 #### Defining gold standard genes
 
-Here is an example of gold-standard genes, which is top 200 PDCD1-upregulated and PDCD1-downregulated genes:
+Here is an example of gold-standard genes, which is top 200 PDCD1-upregulated and PDCD1-downregulated genes of a held-out cohort:
 
 ```
 column	PDCD1_up	PDCD1_down
@@ -555,95 +555,10 @@ column	PDCD1_up	PDCD1_down
 10	ND1	FAM188A
 11	QSOX2	JUN
 12	DPH2	DHRS12
-13	KIF11	PKP3
-14	DHX9	HMGB3P1
-15	SERP1	SHD
-16	NOLC1	XIAP
-17	PARP12	TBC1D10A
-18	LAG3	IFITM4P
-19	GRIN3A	MTM1
-20	KIF4A	OSGIN1
-21	SOX10	B3GALT4
-22	GYG1	SPACA6P
-23	DYRK2	LOC100129781
-24	CACUL1	ANKRD37
-25	FAHD2A	CDS1
-26	TOMM70A	HMGB3
-27	TTLL4	SLC2A3
-28	ADAR	LINC00894
-29	OXCT1	TTC12
-30	FAM171A1	NSDHL
-31	DDAH1	SHC3
-32	TRIM59	ZNF300P1
-33	PLD6	SLC10A3
-34	GFOD1	MOB2
-35	SLAMF8	CRYBA2
-36	CMKLR1	CNEP1R1
-37	IL12RB2	MYOZ1
-38	IL21R	IRAK4
-39	MCM4	EGFLAM
-40	LOC730101	GMPR2
-41	AKR7A2P1	LOC101927263
-42	PRPSAP2	NNMT
-43	CYP27A1	DSCR3
-44	CKAP5	C2orf54
-45	LDOC1L	TGFBR1
-46	CERS2	ZNF784
-47	PLEK2	ACKR3
-48	LAPTM5	SYF2
-49	FUCA1	ZFYVE19
-50	UCHL1	MICAL2
-51	FASTKD5	B4GALT7
-52	PHF19	ZFP2
-53	EBI3	VMA21
-54	FMNL2	CNTNAP2
-55	SH2D2A	MAPK9
-56	CRLF3	SPTSSA
-57	ARNT2	S100P
-58	GLT1D1	FAM19A5
-59	TTF1	LAMP2
-60	TACC3	CRYBG3
-61	IFIT3	SMARCD3
-62	CDC20	INHBC
-63	STAT5A	LRRC70
-64	PKP4	PPHLN1
-65	LIAS	ZSCAN20
-66	ABTB1	IQGAP1
-67	SIAH2	RIC3
-68	C15orf41	MPZL2
-69	FBXL13	ZNF577
-70	MX1	GPR12
-71	RPS6KC1	PPP2CB
-72	VAV1	RIMKLA
-73	YRDC	RNF113A
-74	TTC19	ATP5S
-75	TRIM14	ZNF654
-76	ARHGAP22	SLC16A3
-77	PSMD11	MPP7
-78	MED10	ZNF614
-79	CEBPA	BMPR1A
-80	TNFRSF9	CTAGE11P
-81	RNF135	MGME1
-82	FOXM1	SLC35B2
-83	TUBB	NDUFAF1
-84	HLA-DRB5	NUDT9
-85	CTPS1	SLC2A4RG
-86	FARSB	SPINK1
-87	POLR1E	PLK2
-88	RCL1	DCUN1D3
-89	ATR	ACSF2
-90	ITGB2	LINC00520
-91	TCF19	FAM3A
-92	G26403	C16orf72
-93	CXXC4	VSIG2
-94	SLA	RAP2C
-95	NELL2	MIR31HG
-96	RHCE	HOXB6
-97	ALMS1P	FOLR3
-98	TBC1D7	PHF1
-99	ZNF618	CA11
 ...
 ```
+
+### Running the evaluation
 
 The evaluation will use the gold-standard genes to calculate a **Precision over Recall** curve and **Precision-over-random Over Recall** curve. For example run:
 
@@ -658,8 +573,8 @@ After running you will see 3 files generated:
 -rw-rw-r-- 1 qian qian 5455 Sep 21 11:44 TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt
 ```
 
-The content of TNBC_immunotherapy_PDCD1_pr.txt is the **Precision** values, over the recall values (TNBC_immunotherapy_PDCD1_recall.txt).
-The content of TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt shows the **Precision-Over-Radom values**, over the same recalls as above. For example, the values below are the fold-precision-over-random values.
+- The content of `TNBC_immunotherapy_PDCD1_pr.txt` is the **Precision** values, over the recall values (`TNBC_immunotherapy_PDCD1_recall.txt`).
+- The content of TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt shows the **Precision-Over-Radom values**, over the same recalls as above. For example, the values below are the fold-precision-over-random values.
 ```
 3.470265 3.470265 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 ...
 ```
