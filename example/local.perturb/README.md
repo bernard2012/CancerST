@@ -81,8 +81,8 @@ direction = sys.argv[1]
 
 file1, file2 = None, None
 if direction == "up":
-	file1 = "ganitumab.upregulated.top300"
-	file2 = "gene.shuffled.upregulated"
+	file1 = "ganitumab.upregulated.top300"                # [A]
+	file2 = "gene.shuffled.upregulated"                   # [B]
 elif direction == "down":
 	file1 = "ganitumab.downregulated.top300"
 	file2 = "gene.shuffled.downregulated"
@@ -98,7 +98,7 @@ training_args = {
 	"lr_scheduler_type": "polynomial",
 }
 
-ray_config = {
+ray_config = {                                            # [C]
 	"num_train_epochs": [1.0],
 	"learning_rate": (1e-3, 1e-2),
 	"weight_decay": (0.01, 0.05),
@@ -202,9 +202,9 @@ all_metrics = cc.validate(
 ```
 
 The important settings are:
-- **file1**: Positive gene-set (ganitumab sensitive genes)
-- **file2**: Negative gene-set (randomly selected genes)
-- **ray_config**: The fine-tuning settings, including the settings to iterate through: epochs, learning_rate, weight_decay, warmup_steps, and batch_size. Adjust batch_size according to your GPU memory.
+- **file1** (see `line [A]`): Positive gene-set (ganitumab sensitive genes)
+- **file2** (see `line [B]`: Negative gene-set (randomly selected genes)
+- **ray_config** (see `line [C]`): The fine-tuning settings, including the settings to iterate through: epochs, learning_rate, weight_decay, warmup_steps, and batch_size. Adjust batch_size according to your GPU memory.
 - **num_trials**: Number of Ray Tuning trials (recommend around 50-60).
 - **input_dataset**: Input ST dataset to be used for training purpose (in our case TNBC ST samples).
 - **model_directory**: Location of the pretrained model, which fine-tuning will begin from
