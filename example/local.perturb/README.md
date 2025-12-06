@@ -59,7 +59,7 @@ Next define random genes (randomly selected genes from genome of matched size as
 ([Back to main &uarr;](#contents))
 
 Modify the code `run_finetune_2f_ganitumab.py`. This program shown below, contains finetuning settings and instructions.
-```
+```python
 import torch
 import numpy as np
 import pickle
