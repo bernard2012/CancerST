@@ -2,9 +2,12 @@
 
 We provide a tutorial below for in silico gene perturbation using this model. 
 
-## Table of Contents
+## Contents
 
 - [Fine-tuning the model to enable better prediction](#fine-tuning-the-model-to-enable-better-prediction)
+  - [Step 1: Define Training Genes](#step-1-define-training-genes)
+  - [Step 2: Modify Finetuning Code](#step-2-modify-finetuning-code)
+  - [Step 3: Run Finetuning Code](#step-3-run-finetuning-code)
 - [In Silico Gene Perturbation using the Fine-tuned CancerSTFormer Model](#in-silico-gene-perturbation-using-the-fine-tuned-cancerstformer-model)
 
 <br><br>
