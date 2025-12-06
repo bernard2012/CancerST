@@ -52,6 +52,8 @@ Next define random genes (randomly selected genes from genome of matched size as
 
 ### Step 2: Modify Finetuning Code
 
+([Back to main &uarr;](#contents))
+
 Modify the code `run_finetune_2f_ganitumab.py`. This program shown below, contains finetuning settings and instructions.
 ```
 import torch
@@ -153,6 +155,8 @@ The important settings are:
 <br>
 
 ### Step 3: Run Finetuning Code
+
+([Back to main &uarr;](#contents))
 
 Run the codes.
 
