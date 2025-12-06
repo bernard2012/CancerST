@@ -265,8 +265,7 @@ One query per line. Users can add multiple queries. In this case, the program wi
 
 See example file: `run_perturb_finetuned.py`.
 
-```
-import torch
+```import torch
 import numpy as np
 import pickle
 import os
@@ -276,7 +275,6 @@ from new_in_silico_perturber import InSilicoPerturber
 from new_in_silico_perturber_stats import InSilicoPerturberStats
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
 torch.cuda.empty_cache()
-
 def run_perturb(model_path,dataset_path,out_dir,num_embs=None):
     genes_perturb = list(np.loadtxt("immune.gene.set", dtype=str))
     file_path = "jan21_qian_gene_name_id_dictionary.pickle"
@@ -290,7 +288,6 @@ def run_perturb(model_path,dataset_path,out_dir,num_embs=None):
         token_dictionary = pickle.load(file)
     # Translate gene names to Ensembl IDs using the token_dictionary
     good_genes_final = [gene for gene in good_genes if gene in list(token_dictionary.keys())]
-    
     filter_data_dict={"Disease":["TNBC"]}
     for i, gene in enumerate(good_genes_final):
         try:
@@ -308,7 +305,6 @@ def run_perturb(model_path,dataset_path,out_dir,num_embs=None):
             ispstats.get_stats(out_dir_final, None, out_dir_final, os.path.basename(dataset_path).replace(".dataset","_emb"))
         except Exception as e:
             print(f"Error perturbing gene {gene}: {e}")
-            
 #datestamp = sys.argv[1]
 #run_id = sys.argv[2]
 run_id = "run-d64b2a10"
@@ -332,6 +328,13 @@ model_path = "finetuned/ksplit1/%s/%s" % (run_id, cpt_dir)
 dataset_path = "STGeneformer_TNBC_Normal_Perturbset_filtered.dataset"
 run_perturb(model_path,dataset_path,out_dir)
 ```
+
+We should next run the perturbation codes:
+```
+python3 run_perturb_finetuned.py
+```
+
+<br>
 
 ### Step 3: View the perturbation results
 
@@ -373,6 +376,8 @@ We can go into a gene of interest, say ENSG00000120217. View the content using a
 ```
 
 Column 3 and column 4 are the gene perturbed (CD274 and its ENSEMBL gene ID). The column `Affected_gene_name` shows the most affected gene sorted from lowest to highest `Cosine_sim_mean`. The last column `N_Detections` is equally important - it shows number of spots in which the affected gene is expressed. The number here is presented out of a total of 1000 spots. For genes like CACNB2 and FXYD7, with N_detections of 8 and 2 respectively, they should be probably ignored due to low detections. **We therefore recommend filtering genes based on `N_Detections`, or reranking the genes based on a combination of `Cosine_sim_mean` and `N_Detections`.**
+
+### Step 4: Evaluate the Perturbation Results
 
 
 
