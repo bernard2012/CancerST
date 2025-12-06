@@ -406,13 +406,15 @@ We can go into a gene of interest, say ENSG00000120217. View the content using a
 ...
 ```
 
-Column 3 and column 4 are the gene perturbed (CD274 and its ENSEMBL gene ID). The column `Affected_gene_name` shows the most affected gene sorted from lowest to highest `Cosine_sim_mean`. The last column `N_Detections` is equally important - it shows number of spots in which the affected gene is expressed. The number here is presented out of a total of 1000 spots. For genes like CACNB2 and FXYD7, with N_detections of 8 and 2 respectively, they should be probably ignored due to low detections. **We therefore recommend filtering genes based on `N_Detections`, or reranking the genes based on a combination of `Cosine_sim_mean` and `N_Detections`.**
+- Column 3 and column 4 are the gene perturbed (CD274 and its ENSEMBL gene ID). 
+- The column `Affected_gene_name` shows the most affected gene sorted from lowest to highest `Cosine_sim_mean`. 
+- The last column `N_Detections` is equally important - it shows number of spots in which the affected gene is expressed. The number here is presented out of a total of 1000 spots. For genes like CACNB2 and FXYD7, with N_detections of 8 and 2 respectively, they should be probably ignored due to low detections. **We therefore recommend filtering genes based on `N_Detections`, or reranking the genes based on a combination of `Cosine_sim_mean` and `N_Detections`.**
 
 <br>
 
 We have a function to rerank genes `read_pert` (located in the file `evaluate.pr.tnbc.immunotherapy.basal.custom.py`). see below:
 
-```
+```python
 def read_pert(n, checkpoint, detect_min=-1):
     f = open(checkpoint + "/" + n + "/STGeneformer_TNBC_Normal_Perturbset_filtered_emb.csv")
     h = f.readline().rstrip("\n").split(",")
@@ -608,7 +610,7 @@ After running you will see 3 files generated:
 ```
 
 - The content of `TNBC_immunotherapy_PDCD1_pr.txt` is the **Precision** values, over the recall values (`TNBC_immunotherapy_PDCD1_recall.txt`).
-- The content of TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt shows the **Precision-Over-Radom values**, over the same recalls as above. For example, the values below are the fold-precision-over-random values.
+- The content of `TNBC_immunotherapy_PDCD1_fold_pr_over_random.txt` shows the **Precision-Over-Radom values**, over the same recalls as above. For example, the values below are the fold-precision-over-random values.
 ```
 3.470265 3.470265 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 1.006523 ...
 ```
