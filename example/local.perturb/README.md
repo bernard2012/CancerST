@@ -558,7 +558,7 @@ column	PDCD1_up	PDCD1_down
 ...
 ```
 
-### Running the evaluation
+#### Running the evaluation
 
 The evaluation will use the gold-standard genes to calculate a **Precision over Recall** curve and **Precision-over-random Over Recall** curve. For example run:
 
