@@ -52,7 +52,7 @@ def get_gene_median_file():
 ```
 cp example/local.perturb/*.pickle .
 ```
-Run perturbation tutorial. See `example/local.perturb/README.md`.
+Run perturbation tutorial. See [Local Model Tutorial](example/local.perturb/README.md) `example/local.perturb/README.md`.
 
 
 ### 250um-Extended Model
