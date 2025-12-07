@@ -334,7 +334,7 @@ Change the trial ID `run-c14060f2` with the trial ID from the above table. You s
 
 ([Back to main &uarr;](#contents))
 
-Define the gene to be perturbed. See `immune.gene.set`:
+Define the gene to be perturbed. See `immune.gene.set` ([file](immune.gene.set)):
 
 ```
 PDCD1
