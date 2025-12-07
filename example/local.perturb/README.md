@@ -556,7 +556,19 @@ Here we can run `read_pert()` with `detect_min` set to a cutoff like 100 - this 
 
 ([Back to main &uarr;](#contents))
 
-There is a python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py`. Look at the code:
+Evaluation should be done in TNBC_Gene_Shift_run-XX folder.
+```bash
+pwd
+#should display TNBC_Gene_Shift_run-d64b2a10
+#if not, cd TNBC_Gene_Shift_run-d64b2a10
+```
+
+Copy evaluation script from repository `eval` folder.
+```bash
+cp ../eval/evaluate.pr.tnbc.immunotherapy.basal.custom.py .
+```
+
+This is the python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py`. Look at the code:
 ```python
 import os
 import sys
@@ -765,7 +777,7 @@ To use the evaluation script, you must define the gold-standard genes, i.e., PD-
 
 #### Defining gold standard genes
 
-Here is an example of gold-standard genes, which is top 200 PDCD1-upregulated and PDCD1-downregulated genes of a held-out cohort:
+Before running the evaluation script, we need to define gold standard genes. Here is an example of gold-standard genes, which is top 200 PDCD1-upregulated and PDCD1-downregulated genes of a held-out cohort:
 
 ```
 column	PDCD1_up	PDCD1_down
