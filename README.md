@@ -81,4 +81,4 @@ def get_gene_median_file():
 ```
 cp example/extended.perturb/*.pickle .
 ```
-Run perturbation tutorial. See `example/extended.perturb/README.md`. 
+Run perturbation tutorial. See [Extended Model Tutorial](example/extended.perturb/README.md) `example/extended.perturb/README.md`. 
