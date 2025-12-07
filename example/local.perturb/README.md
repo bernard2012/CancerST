@@ -227,6 +227,8 @@ python3 run_finetune_2f_ganitumab.py up
 
 Upon finishing you will see a training summary table:
 
+#### Table for hyperparameter optimization
+
 | Trial name | status | num_train_epochs | learning_rate | weight_decay | lr_scheduler_type | warmup_steps | seed | ..._train_batch_size | iter | total time (s) | eval_loss | eval_accuracy | eval_macro_f1 | eval_runtime |
 |-----------|--------|------------------|---------------|--------------|-------------------|--------------|------|----------------------|------|----------------|-----------|---------------|---------------|--------------|
 | _objective_9d4a16da | TERMINATED | 1 | 0.0066878 | 0.014467 | linear | 29.39 | 12.4275 | 10 | 1 | 234.389 | 4.93306 | 0.51217 | 0.491421 | 67.2482 |
@@ -290,7 +292,7 @@ Upon finishing you will see a training summary table:
 | _objective_0daa4996 | TERMINATED | 1 | 0.00725638 | 0.0158677 | polynomial | 42.1282 | 23.0332 | 10 | 1 | 233.159 | 3.48375 | 0.42789 | 0.35613 | 66.2857 |
 | _objective_e3a20bc9 | TERMINATED | 1 | 0.0061936 | 0.0272673 | polynomial | 48.4675 | 2.6445 | 10 | 1 | 235.813 | 5.24046 | 0.344616 | 0.343367 | 67.0972 |
 
-#### Table schema for hyperparameter optimization
+#### Schema for the above table (hyperparameter optimization)
 
 | Column name            | Type    | Description |
 |------------------------|---------|-------------|
@@ -509,6 +511,8 @@ drwxrwxr-x 2 qian qian 4096 Nov 18 07:28 ENSG00000163599
 
 We can go into a gene of interest, say ENSG00000120217. View the content using a text editor:
 
+#### Table for perturbation results
+
 |   | Perturbed | Gene_name | Ensembl_ID      | Affected | Affected_gene_name | Affected_Ensembl_ID | Cosine_sim_mean     | Cosine_sim_stdev          | N_Detections |
 |---|-----------|-----------|-----------------|----------|--------------------|----------------------|---------------------|----------------------------|-------------|
 | 13794 | 4242 | CD274 | ENSG00000120217 | spot_emb |  |  | 0.992040998339653  | 0.003973730458465491  | 1000 |
@@ -532,7 +536,7 @@ We can go into a gene of interest, say ENSG00000120217. View the content using a
 | 11359 | 4242 | CD274 | ENSG00000120217 | 12996   | RUFY2              | ENSG00000204130       | 0.9546462617703338  | 0.044570116054495464       | 67 |
 
 
-#### Table Schema: Gene Perturbation Cosine Similarity
+#### Schema for the above table (Gene Perturbation Cosine Similarity)
 
 | Column name | Type | Description |
 |------------|------|-------------|
