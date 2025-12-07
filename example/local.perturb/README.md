@@ -290,7 +290,7 @@ Upon finishing you will see a training summary table:
 | _objective_0daa4996 | TERMINATED | 1 | 0.00725638 | 0.0158677 | polynomial | 42.1282 | 23.0332 | 10 | 1 | 233.159 | 3.48375 | 0.42789 | 0.35613 | 66.2857 |
 | _objective_e3a20bc9 | TERMINATED | 1 | 0.0061936 | 0.0272673 | polynomial | 48.4675 | 2.6445 | 10 | 1 | 235.813 | 5.24046 | 0.344616 | 0.343367 | 67.0972 |
 
-The table schema is shown below:
+#### Table schema for hyperparameter optimization
 
 | Column name            | Type    | Description |
 |------------------------|---------|-------------|
@@ -531,6 +531,21 @@ We can go into a gene of interest, say ENSG00000120217. View the content using a
 | 9063  | 4242 | CD274 | ENSG00000120217 | 10326   | ZNF524             | ENSG00000171443       | 0.9544026698006524  | 0.08879216088724255        | 225 |
 | 11359 | 4242 | CD274 | ENSG00000120217 | 12996   | RUFY2              | ENSG00000204130       | 0.9546462617703338  | 0.044570116054495464       | 67 |
 
+
+#### Table Schema: Gene Perturbation Cosine Similarity
+
+| Column name | Type | Description |
+|------------|------|-------------|
+| `index` | integer | Row identifier / index from the original dataset. |
+| `Perturbed` | integer | Identifier of the perturbed gene or perturbation condition. |
+| `Gene_name` | string | Gene symbol corresponding to the perturbed gene (e.g. HGNC symbol). |
+| `Ensembl_ID` | string | Ensembl gene identifier for the perturbed gene. |
+| `Affected` | string or integer | Identifier of the affected entity (gene ID or special label such as `spot_emb`). |
+| `Affected_gene_name` | string | Gene symbol of the affected gene (empty if not applicable). |
+| `Affected_Ensembl_ID` | string | Ensembl gene identifier of the affected gene (empty if not applicable). |
+| `Cosine_sim_mean` | number | Mean cosine similarity between embeddings for the perturbed–affected pair. |
+| `Cosine_sim_stdev` | number | Standard deviation of cosine similarity across detections. |
+| `N_Detections` | integer | Number of detections / samples used to compute the cosine similarity statistics. |
 
 - Column 3 and column 4 are the gene perturbed (CD274 and its ENSEMBL gene ID). 
 - The column `Affected_gene_name` shows the most affected gene sorted from lowest to highest `Cosine_sim_mean`. 
