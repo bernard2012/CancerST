@@ -525,7 +525,7 @@ We can go into a gene of interest, say ENSG00000120217. View the content using a
 
 <br>
 
-We have a function to rerank genes `read_pert` (located in the file `evaluate.pr.tnbc.immunotherapy.basal.custom.py`). see below:
+We have a function to rerank genes `read_pert` (located in the file `evaluate.pr.tnbc.immunotherapy.basal.custom.py`, [file](eval/evaluate.pr.tnbc.immunotherapy.basal.custom.py)). see below:
 
 ```python
 def read_pert(n, checkpoint, detect_min=-1):
@@ -568,7 +568,7 @@ Copy evaluation script from repository `eval` folder.
 cp ../eval/evaluate.pr.tnbc.immunotherapy.basal.custom.py .
 ```
 
-This is the python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py`. Look at the code:
+This is the python script `evaluate.pr.tnbc.immunotherapy.basal.custom.py` ([file](eval/evaluate.pr.tnbc.immunotherapy.basal.custom.py)). Look at the code:
 ```python
 import os
 import sys
@@ -777,7 +777,7 @@ To use the evaluation script, you must define the gold-standard genes, i.e., PD-
 
 #### Defining gold standard genes
 
-Before running the evaluation script, we need to define gold standard genes. Here is an example of gold-standard genes, which is top 200 PDCD1-upregulated and PDCD1-downregulated genes of a held-out cohort:
+Before running the evaluation script, we need to define gold standard genes. Here is an example of gold-standard genes, which is top 200 PDCD1-upregulated and PDCD1-downregulated genes of a held-out cohort. See `pdcd1.ispy2.basal.targets.txt` ([file](eval/pdcd1.ispy2.basal.targets.txt)).
 
 ```
 column	PDCD1_up	PDCD1_down
