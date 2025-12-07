@@ -149,8 +149,8 @@ output_dir = (
 )
 os.makedirs(output_dir, exist_ok=True)
 
-num_trials = 4
-input_dataset = (
+num_trials = 4                                     # [D]
+input_dataset = (                                  # [E]
 	"/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/"
 	"STGeneformer_TNBC_Normal_Perturbset_filtered.dataset"
 )
@@ -165,7 +165,7 @@ with open(os.path.join(output_dir, "readme"), "w") as fw:
 	fw.write(input_dataset + "\n")
 	fw.write(str(num_trials) + "\n")
 
-cc = Classifier(
+cc = Classifier(                                     # [G]
 	classifier="gene",
 	gene_class_dict=gene_dict,
 	max_num_spots=10_000,
@@ -186,7 +186,7 @@ cc.prepare_data(
 )
 
 all_metrics = cc.validate(
-	model_directory=(
+	model_directory=(                                  # [F]
 		"/media/stu.backup2/Qian/ivy.codes/cancerstformer/data/models"
 	),
 	prepared_input_data_file=(
@@ -205,10 +205,14 @@ The important settings are:
 - **file1** (see `line [A]`): Positive gene-set (ganitumab sensitive genes)
 - **file2** (see `line [B]`: Negative gene-set (randomly selected genes)
 - **ray_config** (see `line [C]`): The fine-tuning settings, including the settings to iterate through: epochs, learning_rate, weight_decay, warmup_steps, and batch_size. Adjust batch_size according to your GPU memory.
-- **num_trials**: Number of Ray Tuning trials (recommend around 50-60).
-- **input_dataset**: Input ST dataset to be used for training purpose (in our case TNBC ST samples).
-- **model_directory**: Location of the pretrained model, which fine-tuning will begin from
-- **Classifier** settings: max_num_spots (the maximum number of spots from input_dataset to take for training purpose), classifier (the type of classifier, in this case, "gene"), num_crossval_splits (1 for 1-split, i.e. 2-fold cross validation, use one fold for training, the other fold for evaluation/model selection. Here split refers to training gene-set split.), freeze_layers (top 4 layers will be frozen. Leaving 2 trainable layers).
+- **num_trials** (see `line [D]`): Number of Ray Tuning trials (recommend around 50-60).
+- **input_dataset** (see `line [E]`): Input ST dataset to be used for training purpose (in our case TNBC ST samples).
+- **model_directory** (see `line [F]`): Location of the pretrained model, which fine-tuning will begin from
+- **Classifier** settings (see `line [G]`): 
+  - **max_num_spots** (the maximum number of spots from input_dataset to take for training purpose)
+  - **classifier** (the type of classifier, in this case, "gene")
+  - **num_crossval_splits** (1 for 1-split, i.e. 2-fold cross validation, use one fold for training, the other fold for evaluation/model selection. Here split refers to training gene-set split.)
+  - **freeze_layers** (top 4 layers will be frozen. Leaving 2 trainable layers).
 <br>
 
 ### Step 3: Run Finetuning Code
