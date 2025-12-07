@@ -290,6 +290,27 @@ Upon finishing you will see a training summary table:
 | _objective_0daa4996 | TERMINATED | 1 | 0.00725638 | 0.0158677 | polynomial | 42.1282 | 23.0332 | 10 | 1 | 233.159 | 3.48375 | 0.42789 | 0.35613 | 66.2857 |
 | _objective_e3a20bc9 | TERMINATED | 1 | 0.0061936 | 0.0272673 | polynomial | 48.4675 | 2.6445 | 10 | 1 | 235.813 | 5.24046 | 0.344616 | 0.343367 | 67.0972 |
 
+The table schema is shown below:
+
+| Column name            | Type    | Description |
+|------------------------|---------|-------------|
+| `Trial name`           | string  | Unique identifier of the trial/run (e.g. hyperparameter optimization trial ID). |
+| `status`               | string  | Status of the trial (e.g. `TERMINATED`, `RUNNING`, `ERROR`). |
+| `num_train_epochs`     | integer | Number of training epochs used in the trial. |
+| `learning_rate`        | number  | Learning rate used for optimization. |
+| `weight_decay`         | number  | Weight decay (L2 regularization coefficient). |
+| `lr_scheduler_type`    | string  | Learning rate scheduler type (e.g. `linear`, `cosine`, `polynomial`). |
+| `warmup_steps`         | number  | Number of warmup steps (may be fractional if derived from a ratio). |
+| `seed`                 | number  | Random seed or numeric trial identifier. |
+| `..._train_batch_size` | integer | Training batch size used in the trial. |
+| `iter`                 | integer | Iteration index for the trial. |
+| `total time (s)`       | number  | Total wall-clock time of the trial in seconds. |
+| `eval_loss`            | number  | Evaluation loss on the validation set. |
+| `eval_accuracy`        | number  | Evaluation accuracy (range 0–1). |
+| `eval_macro_f1`        | number  | Macro-averaged F1 score (range 0–1). |
+| `eval_runtime`         | number  | Time spent on evaluation in seconds. |
+
+
 This table contains the following useful information:
 - eval_loss
 - eval_macro_f1
