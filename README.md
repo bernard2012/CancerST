@@ -81,4 +81,6 @@ def get_gene_median_file():
 ```
 cp example/extended.perturb/*.pickle .
 ```
+Run the tokenization tutorial to create a dataset under the 250um-Extended model. See [Tokenization Tutorial](example/tokenization.md) `example/tokenization.md`.
+
 Run perturbation tutorial. See [Extended Model Tutorial](example/extended.perturb/README.md) `example/extended.perturb/README.md`. 
