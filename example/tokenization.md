@@ -1,4 +1,6 @@
-# Tokenization tutorial
+# Tokenization tutorial (250um-Extended Model)
+
+<b>This is a tokenization tutorial for 250um-Extended model.</b> The tokenization procedure for the 50um-Local model is different and is in another page.
 
 The required format of input file is gene counts matrix.
 <br>
